@@ -4,9 +4,6 @@ const createFeedbackSpy = jest.fn()
 const sendMailSpy = jest.fn()
 
 const submitFeedback = new SubmitFeedbackUseCase(
-  // {create: async () => {}},
-  // {sendMail: async () => {}}
-
   {create: createFeedbackSpy},
   {sendMail: sendMailSpy}
 )
