@@ -9,7 +9,7 @@ import { styles } from './styles';
 import { theme } from '../../theme';
 import { feedbackTypes } from '../../utils/feedbackTypes';
 import { api } from '../../libs/api';
-
+import * as FileSystem from 'expo-file-system'
 
 interface FormProps {
   feedbackType: FeedbackType;
@@ -26,7 +26,7 @@ export function Form({ feedbackType, onFeedbackCanceled, onFeedbackSent }: FormP
 
   function handleScreenshotTaken(){
     captureScreen({
-      format: 'jpg',
+      format: 'png',
       quality: 0.8
     })
     .then(uri => setScreenshot(uri))
@@ -44,11 +44,13 @@ export function Form({ feedbackType, onFeedbackCanceled, onFeedbackSent }: FormP
 
     setIsSendingFeedback(true)
 
+    const screenshotBase64 = screenshot && await FileSystem.readAsStringAsync(screenshot, {encoding: 'base64'})
+
     //Integração com backend
     try {
       await api.post('/feedbacks', {
         type: feedbackType,
-        screenshot,
+        screenshot: `data:image/png;base64, ${screenshotBase64}`,
         comment
       })
 
